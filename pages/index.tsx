@@ -13,10 +13,10 @@ export default function Home() {
   const [ isRunning, setIsRunning ] = useState(false)
   const [ round, setRound ] = useState(0);
   const [ count, setCount ] = useState(0);
+  const [ status, setStatus ] = useState('jump') // 'jump', 'rest'
 
   const beginTraining = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log('begin!');
     isRunning ? setIsRunning(false) : setIsRunning(true);
   }
 
@@ -26,9 +26,14 @@ export default function Home() {
     if (isRunning) {
       interval = setInterval(() => {
         setCount((prev) => {
-          if (prev === 20) {
-            // setIsRunning(false);
+          if (status === 'jump' && prev === 20) {
             setRound((prev) => prev + 1);
+            setStatus('rest');
+            return 0;
+          }
+          console.log(status, prev);
+          if (status === 'rest' && prev === 10) {
+            setStatus('jump');
             return 0;
           }
           return prev + 1;
@@ -53,7 +58,7 @@ export default function Home() {
         <Header />
         <RoundCount completedRounds={ round } />
         <button className={ `${styles.patopleft2} ${styles.prettyButton}` } onClick={beginTraining}>{ isRunning ? 'Stop' : 'Start' }</button>
-        <Timer type="Round 1" seconds={ count }/>
+        <Timer type={ status === 'jump' ? 'Round' : 'Rest' } seconds={ count } round={ status === 'jump' ? round + 1 : undefined}/>
       </main>
     </>
   )
