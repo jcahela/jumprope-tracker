@@ -1,7 +1,7 @@
 .main {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   padding: 6rem;
   min-height: 100vh;
@@ -52,6 +52,46 @@
   background: rgba(var(--card-rgb), 0);
   border: 1px solid rgba(var(--card-border-rgb), 0);
   transition: background 200ms, border 200ms;
+}
+
+.flexColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 400px;
+  margin-top: 50px;
+}
+
+.large {
+  font-size: 200px;
+}
+
+.mt60 {
+  margin-top: 60px;
+}
+
+.patopleft1 {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.patopleft2 {
+  position: absolute;
+  top: 80px;
+  left: 80px;
+}
+
+.prettyButton {
+  padding: 10px;
+  background: white;
+  border: 1px solid;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 200px;
+  font-size: 16px;
+  font-weight: bolder;
 }
 
 .card span {
