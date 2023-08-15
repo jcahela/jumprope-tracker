@@ -13,7 +13,7 @@ export default function Home() {
   const [ isRunning, setIsRunning ] = useState(false)
   const [ round, setRound ] = useState(0);
   const [ count, setCount ] = useState(0);
-  const [ status, setStatus ] = useState('jump') // 'jump', 'rest'
+  const [ isJumping, setIsJumping ] = useState(true)
 
   const beginTraining = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -21,30 +21,31 @@ export default function Home() {
   }
 
   useEffect(() => {
-    let interval;
+    let interval: NodeJS.Timeout | undefined;
+
+    function startCount() {
+      setCount((prev) => {
+        if (isJumping && prev === 20) {
+          setRound((prev) => prev + 1);
+          setIsJumping(false);
+          return 0;
+        }
+        if (!isJumping && prev === 10) {
+          setIsJumping(true);
+          return 0;
+        }
+        return prev + 1;
+      });
+    }
 
     if (isRunning) {
-      interval = setInterval(() => {
-        setCount((prev) => {
-          if (status === 'jump' && prev === 20) {
-            setRound((prev) => prev + 1);
-            setStatus('rest');
-            return 0;
-          }
-          console.log(status, prev);
-          if (status === 'rest' && prev === 10) {
-            setStatus('jump');
-            return 0;
-          }
-          return prev + 1;
-        })
-      }, 1000)
+      interval = setInterval(startCount, 1000);
     }
 
     return () => {
       clearInterval(interval);
     }
-  }, [isRunning]);
+  }, [isRunning, isJumping]);
 
   return (
     <>
@@ -58,7 +59,7 @@ export default function Home() {
         <Header />
         <RoundCount completedRounds={ round } />
         <button className={ `${styles.patopleft2} ${styles.prettyButton}` } onClick={beginTraining}>{ isRunning ? 'Stop' : 'Start' }</button>
-        <Timer type={ status === 'jump' ? 'Round' : 'Rest' } seconds={ count } round={ status === 'jump' ? round + 1 : undefined}/>
+        <Timer type={ isJumping ? 'Round' : 'Rest' } seconds={ count } round={ isJumping ? round + 1 : undefined}/>
       </main>
     </>
   )
