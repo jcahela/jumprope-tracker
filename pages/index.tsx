@@ -10,14 +10,20 @@ import React, { useState, useEffect } from 'react';
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const [ isRunning, setIsRunning ] = useState(false)
+  const [ isRunning, setIsRunning ] = useState(false);
   const [ round, setRound ] = useState(0);
-  const [ count, setCount ] = useState(0);
-  const [ isJumping, setIsJumping ] = useState(true)
+  const [ count, setCount ] = useState(20);
+  const [ isJumping, setIsJumping ] = useState(true);
+  const [ countDown, setCountDown ] = useState(5);
+  const [ isCountingDown, setIsCountingDown ] = useState(true);
 
   const beginTraining = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    isRunning ? setIsRunning(false) : setIsRunning(true);
+    if (isCountingDown) {
+      // Set a timeout to count from 5 to 0, then set isRunning after the timeout is over
+    } else {
+      isRunning ? setIsRunning(false) : setIsRunning(true);
+    }
   }
 
   useEffect(() => {
@@ -25,16 +31,16 @@ export default function Home() {
 
     function startCount() {
       setCount((prev) => {
-        if (isJumping && prev === 20) {
+        if (isJumping && prev === 0) {
           setRound((prev) => prev + 1);
           setIsJumping(false);
-          return 0;
+          return 10;
         }
-        if (!isJumping && prev === 10) {
+        if (!isJumping && prev === 0) {
           setIsJumping(true);
-          return 0;
+          return 20;
         }
-        return prev + 1;
+        return prev - 1;
       });
     }
 
@@ -59,7 +65,11 @@ export default function Home() {
         <Header />
         <RoundCount completedRounds={ round } />
         <button className={ `${styles.patopleft2} ${styles.prettyButton}` } onClick={beginTraining}>{ isRunning ? 'Stop' : 'Start' }</button>
-        <Timer type={ isJumping ? 'Round' : 'Rest' } seconds={ count } round={ isJumping ? round + 1 : undefined}/>
+        { isCountingDown ? (
+          <Timer type={ 'Get Ready!' } seconds={ countDown } round={ undefined }/>
+        ) : (
+          <Timer type={ isJumping ? 'Round' : 'Rest' } seconds={ count } round={ isJumping ? round + 1 : undefined}/>
+        )}
       </main>
     </>
   )
